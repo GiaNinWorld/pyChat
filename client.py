@@ -16,7 +16,7 @@ def receive_messages(client_socket):
 
 def send_messages(client_socket):
     while True:
-        message = f'{nickname}: {input("")}'
+        message = f'[{nickname}]:\n{input("")}'
         client_socket.send(message.encode('utf-8'))
 
 def start_client():
