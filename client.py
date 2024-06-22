@@ -1,6 +1,18 @@
 import socket
 import threading
 
+emoji_dict = {
+    ":)" : "😊",
+    ":(" : "😞",
+    ":D" : "😀",
+    ":O" : "😲",
+    ":P" : "😛",
+    ":|" : "😐",
+    ":3" : "🤪",
+    ":/" : "🙄",
+    ":>" : "😁",
+    ":<" : "🙁",
+}                   
 def receive_messages(client_socket):
     while True:
         try:
@@ -16,8 +28,15 @@ def receive_messages(client_socket):
 
 def send_messages(client_socket):
     while True:
-        message = f'[{nickname}]:\n{input("")}'
+        message_input = input("")
+        message_with_emojis = replace_emojis(message_input)
+        message = f'[{nickname}]:\n{message_with_emojis}'
         client_socket.send(message.encode('utf-8'))
+
+def replace_emojis(message):
+    for key, value in emoji_dict.items():
+        message = message.replace(key, value)
+    return message
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
