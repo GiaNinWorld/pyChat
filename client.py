@@ -2,6 +2,19 @@ import socket
 import threading
 import os
 
+emoji_dict = {
+    ":)" : "😊",
+    ":(" : "😞",
+    ":D" : "😀",
+    ":O" : "😲",
+    ":P" : "😛",
+    ":|" : "😐",
+    ":3" : "🤪",
+    ":/" : "🙄",
+    ":>" : "😁",
+    ":<" : "🙁",
+}
+
 def receive_messages(client_socket):
     while True:
         try:
@@ -17,8 +30,14 @@ def receive_messages(client_socket):
 
 def send_messages(client_socket):
     while True:
-        message = f'[{nickname}]: {input("")}'
+        message_input = replace_emojis(input(""))
+        message = f'\n[{nickname}]:\n  {message_input}'
         client_socket.send(message.encode('utf-8'))
+
+def replace_emojis(message):
+    for key, value in emoji_dict.items():
+        message = message.replace(key, value)
+    return message
 
 def send_file(client_socket, file_path):
     if os.path.getsize(file_path) > 20 * 1024 * 1024:  # 20 MB
@@ -38,20 +57,25 @@ def send_file(client_socket, file_path):
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+<<<<<<< HEAD
     # client_socket.connect(('26.70.100.234', 5555))
     # client_socket.connect(('localhost', 5555))
+=======
+    client_socket.connect(('26.70.100.234', 5555))
+>>>>>>> 335d0e0360a6a1f8cdd8669a08ceda66100dab3f
 
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()
 
     choice = input("Digite 'm' para enviar mensagem ou 'f' para enviar arquivo: ")
-    if choice == 'm':
-        send_thread = threading.Thread(target=send_messages, args=(client_socket,))
-        send_thread.start()
-    elif choice == 'f':
+    
+    if choice.upper() == 'F':
         file_path = input("Digite o caminho do arquivo a ser enviado: ")
         send_file(client_socket, file_path)
-
+    else:
+        send_thread = threading.Thread(target=send_messages, args=(client_socket,))
+        send_thread.start()
+        
 if __name__ == "__main__":
     nickname = input("Choose your nickname: ")
     start_client()
