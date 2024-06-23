@@ -18,11 +18,11 @@ def handle_client(client_socket):
         try:
             message = client_socket.recv(1024)
             if message:
-                print(f"Received message\n{message.decode('utf-8')}")
+                print(f"{message.decode('utf-8')}")
                 broadcast(message, client_socket)
         except:
             nickname = nicknames[client_socket]
-            broadcast(f"{nickname} has left the chat.".encode('utf-8'), client_socket)
+            broadcast(f"\n{nickname} has left the chat.".encode('utf-8'), client_socket)
             print(f"{nickname} has disconnected.")
             clients.remove(client_socket)
             del nicknames[client_socket]
@@ -44,7 +44,7 @@ def start_server():
         nicknames[client_socket] = nickname
         clients.append(client_socket)
         print(f"New client connected {nickname}")
-        broadcast(f"{nickname} has joined the chat.".encode('utf-8'), client_socket)
+        broadcast(f"\n{nickname} has joined the chat.".encode('utf-8'), client_socket)
         client_socket.send("Connected to the server.".encode('utf-8'))
 
         thread = threading.Thread(target=handle_client, args=(client_socket,))
