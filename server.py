@@ -1,8 +1,21 @@
 import socket
 import threading
+import random
 
 clients = []
 nicknames = {}
+colors = {}
+
+# Lista de cores ANSI
+color_codes = [
+    '\033[91m',  # Vermelho
+    '\033[92m',  # Verde
+    '\033[93m',  # Amarelo
+    '\033[94m',  # Azul
+    '\033[95m',  # Magenta
+    '\033[96m',  # Ciano
+    '\033[97m',  # Branco
+]
 
 def broadcast(message, client_socket):
     for client in clients:
@@ -18,14 +31,18 @@ def handle_client(client_socket):
         try:
             message = client_socket.recv(1024)
             if message:
-                print(f"{message.decode('utf-8')}")
-                broadcast(message, client_socket)
+                nickname = nicknames[client_socket]
+                color = colors[nickname]
+                formatted_message = f"{color}{message.decode('utf-8')}\033[0m"
+                print(formatted_message)
+                broadcast(formatted_message.encode('utf-8'), client_socket)
         except:
             nickname = nicknames[client_socket]
             broadcast(f"\n{nickname} has left the chat.".encode('utf-8'), client_socket)
             print(f"{nickname} has disconnected.")
             clients.remove(client_socket)
             del nicknames[client_socket]
+            del colors[nickname]
             client_socket.close()
             break
 
@@ -43,8 +60,13 @@ def start_server():
         nickname = client_socket.recv(1024).decode('utf-8')
         nicknames[client_socket] = nickname
         clients.append(client_socket)
+
+        # Atribuir uma cor aleatória ao nickname
+        color = random.choice(color_codes)
+        colors[nickname] = color
+
         print(f"New client connected {nickname}")
-        broadcast(f"\n{nickname} has joined the chat.".encode('utf-8'), client_socket)
+        broadcast(f"\n{color}{nickname} has joined the chat.\033[0m".encode('utf-8'), client_socket)
         client_socket.send("Connected to the server.".encode('utf-8'))
 
         thread = threading.Thread(target=handle_client, args=(client_socket,))

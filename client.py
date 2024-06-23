@@ -40,7 +40,7 @@ def replace_emojis(message):
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('26.70.100.234', 5555))
+    client_socket.connect(('localhost', 5555))
 
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()
