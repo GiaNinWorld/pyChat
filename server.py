@@ -18,7 +18,7 @@ def handle_client(client_socket):
         try:
             message = client_socket.recv(1024)
             if message:
-                print(f"Received message: {message.decode('utf-8')}")
+                print(f"Received message\n{message.decode('utf-8')}")
                 broadcast(message, client_socket)
         except:
             nickname = nicknames[client_socket]
@@ -31,7 +31,7 @@ def handle_client(client_socket):
 
 def start_server():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('localhost', 5555))
+    server.bind(('0.0.0.0', 5555))  # Ouvir em todas as interfaces de rede
     server.listen()
 
     print("Server is listening on port 5555")
@@ -43,7 +43,7 @@ def start_server():
         nickname = client_socket.recv(1024).decode('utf-8')
         nicknames[client_socket] = nickname
         clients.append(client_socket)
-        print(f"Nickname of the client is {nickname}")
+        print(f"New client connected {nickname}")
         broadcast(f"{nickname} has joined the chat.".encode('utf-8'), client_socket)
         client_socket.send("Connected to the server.".encode('utf-8'))
 

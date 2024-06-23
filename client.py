@@ -16,12 +16,12 @@ def receive_messages(client_socket):
 
 def send_messages(client_socket):
     while True:
-        message = f'[{nickname}]:\n{input("")}'
+        message = f'\n[{nickname}]:\n  {input("")}'
         client_socket.send(message.encode('utf-8'))
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('localhost', 5555))
+    client_socket.connect(('RADMIN_IP', 5555))
 
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()
