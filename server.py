@@ -58,7 +58,7 @@ def receive_file(client_socket):
         client_socket.send("File size exceeds 20 MB limit.".encode('utf-8'))
         return
 
-    downloads_path = os.path.join(os.path.expanduser('~'), 'Downloads')
+    downloads_path = os.path.join(os.path.expanduser('~'), 'pyChat')
     file_path = os.path.join(downloads_path, file_name)
 
     with open(file_path, 'wb') as file:
