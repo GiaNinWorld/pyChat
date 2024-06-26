@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import filedialog
+import os
 
 
 class ChatDosGuri(ctk.CTk):
@@ -24,7 +25,7 @@ class ChatDosGuri(ctk.CTk):
         self.entrada.bind("<Return>", self.enviar_mensagem)
 
         # Botão para enviar mensagens
-        self.botao_enviar = ctk.CTkButton(self, text="Enviar..", fg_color='#111111', command=self.enviar_mensagem)
+        self.botao_enviar = ctk.CTkButton(self, text="Enviar", fg_color='#111111', command=self.enviar_mensagem)
         self.botao_enviar.pack(side=tk.RIGHT, padx=10, pady=10)
 
         # Botão para anexar arquivos
@@ -41,14 +42,28 @@ class ChatDosGuri(ctk.CTk):
             self.entrada.delete(0, tk.END)
             self.area_texto.yview(tk.END)
 
-#anexa os arquivos
     def anexar_arquivo(self):
         caminho_arquivo = filedialog.askopenfilename()
         if caminho_arquivo:
+            nome_arquivo = os.path.basename(caminho_arquivo)
             self.area_texto.configure(state='normal')
-            self.area_texto.insert(tk.END, f"Arquivo anexado: {caminho_arquivo}\n")
+            self.area_texto.insert(tk.END, f"Arquivo anexado: {nome_arquivo}\n")
+
+            # Cria um botão para baixar o arquivo
+            botao_baixar = ctk.CTkButton(self.frame_chat, text="Baixar arquivo", command=lambda: self.baixar_arquivo(caminho_arquivo))
+            self.area_texto.window_create(tk.END, window=botao_baixar)
+            self.area_texto.insert(tk.END, "\n")
+            
             self.area_texto.configure(state='disabled')
             self.area_texto.yview(tk.END)
+
+    def baixar_arquivo(self, caminho_arquivo):
+        destino = filedialog.asksaveasfilename(defaultextension=".*", initialfile=os.path.basename(caminho_arquivo))
+        if destino:
+            with open(caminho_arquivo, 'rb') as arquivo_origem:
+                with open(destino, 'wb') as arquivo_destino:
+                    arquivo_destino.write(arquivo_origem.read())
+            print(f"Arquivo salvo em: {destino}")
 
 
 if __name__ == "__main__":
