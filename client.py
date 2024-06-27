@@ -1,15 +1,11 @@
 import socket
+
 from telanick import root as nickname_root
 from testeinterfacedosguri import ChatDosGuri
 
 def start_client(nickname):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-<<<<<<< HEAD
-    # client_socket.connect(('26.70.100.234', 5555))
-    # client_socket.connect(('localhost', 5555))
-=======
     client_socket.connect(('26.70.100.234', 5555))
->>>>>>> 335d0e0360a6a1f8cdd8669a08ceda66100dab3f
 
     app = ChatDosGuri(client_socket, nickname)
     app.protocol("WM_DELETE_WINDOW", lambda: on_closing(client_socket, app))

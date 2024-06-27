@@ -1,11 +1,11 @@
-import socket
-import threading
-import random
 import os
+import socket
+import random
+import threading
 
+colors = {}
 clients = []
 nicknames = {}
-colors = {}
 
 # Lista de cores em hexadecimal
 color_codes = [

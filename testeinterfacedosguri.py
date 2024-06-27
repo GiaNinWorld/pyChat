@@ -3,7 +3,8 @@ import threading
 import tkinter as tk
 from PIL import Image
 import customtkinter as ctk
-from tkinter import filedialog, simpledialog
+from tkinter import filedialog
+
 from telanick import root
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -76,7 +77,7 @@ class ChatDosGuri(ctk.CTk):
         mensagem = self.entrada.get()
         if mensagem.strip():
             self.area_texto.configure(state='normal')
-            self.area_texto.insert(tk.END, f"Você: {mensagem}\n")
+            self.area_texto.insert(tk.END, f"Você:\n {mensagem}\n")
             self.area_texto.configure(state='disabled')
             self.entrada.delete(0, tk.END)
             self.area_texto.yview(tk.END)
