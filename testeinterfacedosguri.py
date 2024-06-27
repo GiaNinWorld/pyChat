@@ -4,6 +4,7 @@ import tkinter as tk
 from PIL import Image
 import customtkinter as ctk
 from tkinter import filedialog, simpledialog
+from telanick import root
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 image_1 = ctk.CTkImage(Image.open(file_path + './assets/baixar.png'), size=(20,20))
@@ -29,17 +30,17 @@ def receive_messages(client_socket, gui):
                 if len(parts) == 3:
                     sender, color, text = parts
                     gui.show_message(sender, color, text)
-        except:
-            print("An error occurred!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
             client_socket.close()
             break
 
 class ChatDosGuri(ctk.CTk):
-    def __init__(self, client_socket):
+    def __init__(self, client_socket, nickname):
         super().__init__()
 
         self.client_socket = client_socket
-        self.nickname = simpledialog.askstring('Nickname', 'Escolha seu apelido', parent=self)
+        self.nickname = nickname  # Usa o nickname recebido como parâmetro
 
         self.title("Chat dos Guri")
         self.geometry("1280x720")
@@ -54,10 +55,10 @@ class ChatDosGuri(ctk.CTk):
         self.entrada.pack(side=tk.LEFT, fill=tk.X, padx=15, pady=12, expand=True)
         self.entrada.bind("<Return>", self.enviar_mensagem)
 
-        self.botao_enviar = ctk.CTkButton(self, text="Enviar", fg_color='#111111', command=self.enviar_mensagem)
+        self.botao_enviar = ctk.CTkButton(self, text="Enviar", command=self.enviar_mensagem)
         self.botao_enviar.pack(side=tk.LEFT, padx=10, pady=10)
 
-        self.botao_anexar = ctk.CTkButton(self, text="Anexar Arquivo", fg_color='#111111', command=self.anexar_arquivo)
+        self.botao_anexar = ctk.CTkButton(self, text="Anexar Arquivo", command=self.anexar_arquivo)
         self.botao_anexar.pack(side=tk.RIGHT, padx=10, pady=10)
 
         self.receive_thread = threading.Thread(target=receive_messages, args=(self.client_socket, self))
@@ -106,5 +107,6 @@ class ChatDosGuri(ctk.CTk):
             self.area_texto.yview(tk.END)
 
 if __name__ == "__main__":
-    app = ChatDosGuri(None)
-    app.mainloop()
+
+    # Mostra a janela para o usuário inserir o nickname
+    root.mainloop()
