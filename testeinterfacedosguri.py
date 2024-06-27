@@ -3,7 +3,8 @@ import threading
 import tkinter as tk
 from PIL import Image
 import customtkinter as ctk
-from tkinter import filedialog, simpledialog
+from tkinter import filedialog
+
 from telanick import root
 
 file_path = os.path.dirname(os.path.realpath(__file__))
