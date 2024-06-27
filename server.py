@@ -1,20 +1,23 @@
 import socket
 import threading
 import random
+import os
 
 clients = []
 nicknames = {}
 colors = {}
 
-# Lista de cores ANSI
+# Lista de cores em hexadecimal
 color_codes = [
-    '\033[91m',  # Vermelho
-    '\033[92m',  # Verde
-    '\033[93m',  # Amarelo
-    '\033[94m',  # Azul
-    '\033[95m',  # Magenta
-    '\033[96m',  # Ciano
-    '\033[97m',  # Branco
+    '#FF5733',
+    '#402E7A',
+    '#4B70F5',
+    '#FF33FF',
+    '#3DC2EC',
+    '#647E68',
+    '#041C32',
+    '#8B9A46',
+    '#4E9F3D'
 ]
 
 def broadcast(message, client_socket):
@@ -31,11 +34,22 @@ def handle_client(client_socket):
         try:
             message = client_socket.recv(1024)
             if message:
-                nickname = nicknames[client_socket]
-                color = colors[nickname]
-                formatted_message = f"{color}{message.decode('utf-8')}\033[0m"
-                print(formatted_message)
-                broadcast(formatted_message.encode('utf-8'), client_socket)
+                if message.startswith(b'FILE:'):
+                    filename = message[5:].decode('utf-8')
+                    filepath = os.path.join(os.getcwd(), filename)
+                    with open(filepath, 'wb') as f:
+                        while True:
+                            data = client_socket.recv(1024)
+                            if not data:
+                                break
+                            f.write(data)
+                    broadcast(f"Arquivo recebido: {filename}".encode('utf-8'), client_socket)
+                else:
+                    nickname = nicknames[client_socket]
+                    color = colors[nickname]
+                    formatted_message = f"{nickname}:{color}:{message.decode('utf-8')}"
+                    print(formatted_message)
+                    broadcast(formatted_message.encode('utf-8'), client_socket)
         except:
             nickname = nicknames[client_socket]
             broadcast(f"\n{nickname} has left the chat.".encode('utf-8'), client_socket)
@@ -65,7 +79,7 @@ def start_server():
         colors[nickname] = color
 
         print(f"New client connected {nickname}")
-        broadcast(f"\n{color}{nickname} has joined the chat.\033[0m".encode('utf-8'), client_socket)
+        broadcast(f"\n{nickname} has joined the chat.\n".encode('utf-8'), client_socket)
         client_socket.send("Connected to the server.".encode('utf-8'))
 
         thread = threading.Thread(target=handle_client, args=(client_socket,))
