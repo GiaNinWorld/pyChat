@@ -42,6 +42,7 @@ class ChatDosGuri(ctk.CTk):
             self.entrada.delete(0, tk.END)
             self.area_texto.yview(tk.END)
 
+#func de anexar
     def anexar_arquivo(self):
         caminho_arquivo = filedialog.askopenfilename()
         if caminho_arquivo:
@@ -57,6 +58,7 @@ class ChatDosGuri(ctk.CTk):
             self.area_texto.configure(state='disabled')
             self.area_texto.yview(tk.END)
 
+# func de baixar os arquivos
     def baixar_arquivo(self, caminho_arquivo):
         destino = filedialog.asksaveasfilename(defaultextension=".*", initialfile=os.path.basename(caminho_arquivo))
         if destino:
