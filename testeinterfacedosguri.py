@@ -1,7 +1,12 @@
-import customtkinter as ctk
-import tkinter as tk
-from tkinter import filedialog
 import os
+import random
+import tkinter as tk
+from PIL import Image
+import customtkinter as ctk
+from tkinter import filedialog
+
+file_path = os.path.dirname(os.path.realpath(__file__))
+image_1 = ctk.CTkImage(Image.open(file_path + './assets/baixar.png'), size=(25,25))
 
 
 class ChatDosGuri(ctk.CTk):
@@ -26,7 +31,7 @@ class ChatDosGuri(ctk.CTk):
 
         # Botão para enviar mensagens
         self.botao_enviar = ctk.CTkButton(self, text="Enviar", fg_color='#111111', command=self.enviar_mensagem)
-        self.botao_enviar.pack(side=tk.RIGHT, padx=10, pady=10)
+        self.botao_enviar.pack(side=tk.LEFT, padx=10, pady=10)
 
         # Botão para anexar arquivos
         self.botao_anexar = ctk.CTkButton(self, text="Anexar Arquivo", fg_color='#111111', command=self.anexar_arquivo)
@@ -47,10 +52,10 @@ class ChatDosGuri(ctk.CTk):
         if caminho_arquivo:
             nome_arquivo = os.path.basename(caminho_arquivo)
             self.area_texto.configure(state='normal')
-            self.area_texto.insert(tk.END, f"Arquivo anexado: {nome_arquivo}\n")
+            self.area_texto.insert(tk.END, f"{nome_arquivo} ")
 
             # Cria um botão para baixar o arquivo
-            botao_baixar = ctk.CTkButton(self.frame_chat, text="Baixar arquivo", command=lambda: self.baixar_arquivo(caminho_arquivo))
+            botao_baixar = ctk.CTkButton(self.frame_chat, text=None, command=lambda: self.baixar_arquivo(caminho_arquivo), hover=False, fg_color='white', bg_color='white', image=image_1, height=25, width=25)
             self.area_texto.window_create(tk.END, window=botao_baixar)
             self.area_texto.insert(tk.END, "\n")
             
