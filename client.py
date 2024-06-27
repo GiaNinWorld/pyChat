@@ -5,7 +5,7 @@ from testeinterfacedosguri import ChatDosGuri
 
 def start_client(nickname):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('26.70.100.234', 5555))
+    client_socket.connect(('26.63.95.55', 5555))
 
     app = ChatDosGuri(client_socket, nickname)
     app.protocol("WM_DELETE_WINDOW", lambda: on_closing(client_socket, app))
